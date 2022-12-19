@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">MusicViewPager2</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="action_settings">Settings</string>
+    <string name="text_value_radio_notification">Music-Radio Player</string>
+    <string name="acra_toast_text">ACRA Crash Repot</string>
+    <string name="mail_subject">musicViewpager2 크래시 발생</string>
+    <string name="mail_body">기본바디</string>
+</resources>
