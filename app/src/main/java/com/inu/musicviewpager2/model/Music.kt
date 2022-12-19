@@ -4,7 +4,7 @@ import android.net.Uri
 
 //@Parcelize
 data class Music(
-    var id:Int,
+    var album:String,
     var title:String?,
     var artist:String?,
     var albumId:Long?,
