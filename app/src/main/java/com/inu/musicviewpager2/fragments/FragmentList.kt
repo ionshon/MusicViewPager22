@@ -1,40 +1,41 @@
 package com.inu.musicviewpager2.fragments
 
 import android.Manifest
-import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Adapter
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.inu.musicviewpager2.adapter.MusicAdapter
-import com.inu.musicviewpager2.MusicProvider
 import com.inu.musicviewpager2.MusicProvider.getMusicList
 import com.inu.musicviewpager2.databinding.FragmentListBinding
 import com.inu.musicviewpager2.model.Music
 import com.inu.musicviewpager2.model.MusicDevice.deviceMusics
 import com.inu.musicviewpager2.model.MusicDevice.musicList
+import com.inu.musicviewpager2.util.BubbleListener
 import com.inu.musicviewpager2.util.MyApplication
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.util.*
+import com.inu.musicviewpager2.util.SimpleOffsetDecoration
 import kotlin.system.exitProcess
 
 class FragmentList : Fragment() {
     private val permission = Manifest.permission.READ_EXTERNAL_STORAGE
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
     private val adapter : MusicAdapter by lazy { MusicAdapter() } // outer scope
-
     private lateinit var binding: FragmentListBinding
+    lateinit var recyclerView: RecyclerView
+    lateinit var handleView: ImageView
+    lateinit var bubble: View
+    lateinit var bubbleText: TextView
+    lateinit var bubbleListener: BubbleListener
 
     var searchList = mutableListOf<Music>()
     override fun onCreateView(
@@ -43,8 +44,26 @@ class FragmentList : Fragment() {
     ): View {
         binding = FragmentListBinding.inflate(inflater, container, false)
 
-
-
+        recyclerView = binding.recyclerViewList
+        // HandleView
+        handleView = binding.handleView
+        handleView.bringToFront()
+        // BubbleView (optional feature)
+        // must implement with BubbleAdapter. see @SimpleAdapter
+        bubble = binding.bubble
+        bubble.bringToFront()
+        bubbleText = binding.bubbleText
+        bubbleListener = object : BubbleListener {
+            override fun setBubble(str: String) {
+                bubbleText.text = str
+            }
+            override fun setViewY(y: Float) {
+                bubble.y = y
+            }
+            override fun setVisible(isVisible: Boolean) {
+                bubble.visibility = if (isVisible) View.VISIBLE else View.GONE
+            }
+        }
         requestPermissionLauncher = registerForActivityResult(
             ActivityResultContracts.RequestPermission()
         ) { isGranted ->
@@ -85,14 +104,30 @@ class FragmentList : Fragment() {
             setListview()
         }
 
+        binding.imageViewShuffle.setOnClickListener {
+            musicList.shuffle()
+            adapter.updateList()
+        }
+        binding.imageViewGenre.setOnClickListener {
+            musicList.sortBy { it.genre }
+            adapter.updateList()
+        }
+        binding.imageViewAlbum.setOnClickListener {
+            musicList.sortBy { it.albumId }
+            adapter.updateList()
+        }
         return binding.root
     }
 
     private fun setListview() {
-        binding.recyclerViewList.apply {
-            this.layoutManager = LinearLayoutManager(MyApplication.applicationContext())
+        recyclerView.apply {
             this.adapter = this@FragmentList.adapter // Qualified this
             this.layoutManager = LinearLayoutManager(context)
+//            addItemDecoration(SimpleOffsetDecoration(20))
+        }.also { recyclerView ->
+            // Bind
+            com.inu.musicviewpager2.util.FastScroller(handleView, bubbleListener, recyclerView).bind(recyclerView)
+            Log.d("bubleAdapter","0")
         }
         musicList.clear()
         musicList.addAll(deviceMusics)
@@ -115,7 +150,6 @@ class FragmentList : Fragment() {
 //        recyclerViewList.layoutManager = LinearLayoutManager(requireContext())
     }
 
-    @RequiresApi(Build.VERSION_CODES.R)
     override fun onResume() {
         super.onResume()
 //        CoroutineScope(Dispatchers.IO).launch { MusicProvider.getGenre(requireContext())

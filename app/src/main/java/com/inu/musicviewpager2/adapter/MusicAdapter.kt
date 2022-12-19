@@ -2,6 +2,7 @@ package com.inu.musicviewpager2.adapter
 
 import android.app.PendingIntent
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.media.MediaMetadataRetriever
 import android.media.MediaMetadataRetriever.METADATA_KEY_GENRE
 import android.util.Log
@@ -14,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide.with
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.material.snackbar.Snackbar
-import com.inu.musicviewpager2.MusicProvider
 import com.inu.musicviewpager2.R
 import com.inu.musicviewpager2.constant.MusicConstants
 import com.inu.musicviewpager2.constant.PendinIntent.lPauseIntent
@@ -29,13 +29,15 @@ import com.inu.musicviewpager2.model.MusicDevice.musicList
 import com.inu.musicviewpager2.model.MusicDevice.song
 import com.inu.musicviewpager2.model.MusicDevice.titleDetail
 import com.inu.musicviewpager2.service.ForegroundService
+import com.inu.musicviewpager2.util.BubbleAdapter
 import com.inu.musicviewpager2.util.MyApplication
 import com.inu.musicviewpager2.util.NetworkHelper.isInternetAvailable
 import com.mpatric.mp3agic.Mp3File
+import dlna.model.UpnpDevice
 import java.text.SimpleDateFormat
 
 
-class MusicAdapter : RecyclerView.Adapter<MusicAdapter.Holder>() {
+class MusicAdapter : RecyclerView.Adapter<MusicAdapter.Holder>(), BubbleAdapter {
 
     val resId = R.drawable.outline_music_note_24
     private var intent: Intent? = null
@@ -192,12 +194,20 @@ class MusicAdapter : RecyclerView.Adapter<MusicAdapter.Holder>() {
                 .load(music.albumUri)
                 .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                 .error(resId)
-             .into(binding.imageAlbum)
+                .into(binding.imageAlbum)
 //            Log.d("adpter : ", "${music.albumUri}")
         }
     }
     private fun showError(v: View) {
         Snackbar.make(v, "No internet", Snackbar.LENGTH_LONG).show()
+    }
+
+    fun updateList() {
+        notifyDataSetChanged() // 리스트 변경을 adapter에 알림
+    }
+
+    override fun getBubbleItem(adapterPosition: Int): String {
+        return "$adapterPosition"
     }
 }
 

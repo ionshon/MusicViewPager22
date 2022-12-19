@@ -6,4 +6,5 @@
     <string name="acra_toast_text">ACRA Crash Repot</string>
     <string name="mail_subject">musicViewpager2 크래시 발생</string>
     <string name="mail_body">기본바디</string>
+    <string name="quick_scroll_handle">quick scroll handle</string>
 </resources>

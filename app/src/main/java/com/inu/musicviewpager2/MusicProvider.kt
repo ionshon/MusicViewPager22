@@ -22,30 +22,30 @@ object MusicProvider {
     // 2. 가져올 데이터 컬컴 정의
     private val proj = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
         arrayOf(
-            MediaStore.Audio.AudioColumns._ID, // 0
+            MediaStore.Audio.AudioColumns.ALBUM, // 0
             MediaStore.Audio.AudioColumns.TITLE, // 1
             MediaStore.Audio.AudioColumns.ARTIST,// 2
             MediaStore.Audio.AudioColumns.ALBUM_ID, // 3
             MediaStore.Audio.AudioColumns.DURATION, // 4
             MediaStore.Audio.AudioColumns.DATA, // 5
-            MediaStore.Audio.AudioColumns.GENRE //6 정은폰에러?
+            MediaStore.Audio.AudioColumns.GENRE //6
         )
     } else {
         arrayOf(
-            MediaStore.Audio.AudioColumns._ID, // 0
+            MediaStore.Audio.AudioColumns.ALBUM, // 0
             MediaStore.Audio.AudioColumns.TITLE, // 1
             MediaStore.Audio.AudioColumns.ARTIST,// 2
             MediaStore.Audio.AudioColumns.ALBUM_ID, // 3
             MediaStore.Audio.AudioColumns.DURATION, // 4
-            MediaStore.Audio.AudioColumns.DATA // 5
-//            MediaStore.Audio.AudioColumns.GENRE //6 정은폰에러?
+            MediaStore.Audio.AudioColumns.DATA, // 5
+            MediaStore.Audio.AudioColumns.ALBUM //6 정은폰에러?
         )
     }
 
     fun getMusicList(context: Context): List<Music> {
         //3.  컨텐트 리졸버에 해당 데이터 요청
-        val cursor = context.contentResolver.query(musicUri, proj, null, null,
-            MediaStore.Audio.Media.ARTIST + " ASC")
+        val cursor = context.contentResolver.query(musicUri, proj, null, null)
+//            MediaStore.Audio.Media.ARTIST + " ASC")
         // 4. 커서로 전달받은 데이터를 꺼내서 저장
 
         Log.d("", "${cursor!!}")
@@ -54,7 +54,7 @@ object MusicProvider {
             val title = cursor.getString(1)
             val duration = cursor.getLong(4)
             if (duration > 10000 && !title.contains("통화 녹음")) {  // 약 2분 이하 곡 제외
-                val id = cursor.getInt(0)
+                val id = cursor.getString(0)
                 val artist = cursor.getString(2)
                 val albumId = cursor.getLong(3) //Long = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID)) //cursor!!.getString(3)
                 val albumUri = Uri.parse("content://media/external/audio/albumart/$albumId")
@@ -74,7 +74,7 @@ object MusicProvider {
         return  musicList.shuffled()
     }
 
-    fun getGenre(context: Context):List<Music> {
+    /*fun getGenre(context: Context):List<Music> {
         val projGenre = arrayOf(
             MediaStore.Audio.Genres._ID, // 0
             MediaStore.Audio.Genres.NAME // 1
@@ -142,5 +142,5 @@ object MusicProvider {
         val num: Int = c.getCount()
         c.close()
         return num
-    }
+    }*/
 }

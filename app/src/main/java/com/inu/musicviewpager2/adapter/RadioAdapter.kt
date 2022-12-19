@@ -12,6 +12,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.inu.musicviewpager2.R
 import com.inu.musicviewpager2.constant.MusicConstants
@@ -21,17 +22,18 @@ import com.inu.musicviewpager2.model.MusicDevice
 import com.inu.musicviewpager2.model.MusicDevice.dataSource
 import com.inu.musicviewpager2.model.MusicDevice.imageRadioPlaySource
 import com.inu.musicviewpager2.model.Radio
-import com.inu.musicviewpager2.module.GlideApp
 import com.inu.musicviewpager2.service.ForegroundService
 import com.inu.musicviewpager2.util.NetworkHelper
 import com.inu.musicviewpager2.util.NetworkHelper.isInternetAvailable
 import com.inu.musicviewpager2.util.SetStreamUrl
+import kotlin.properties.Delegates
 
 class RadioAdapter: RecyclerView.Adapter<RadioAdapter.GridAdapter>(){
     class GridAdapter(val layout: View): RecyclerView.ViewHolder(layout)
 
     var listData = mutableListOf<Radio>()
     var context: Context? = null
+    var time = System.currentTimeMillis()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):  GridAdapter {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.radio_item, parent, false)
@@ -54,17 +56,16 @@ class RadioAdapter: RecyclerView.Adapter<RadioAdapter.GridAdapter>(){
         var radioImageView = holder.layout.findViewById<ImageView>(R.id.image_radio_item)
 
         if (data.title != "") {
-            GlideApp.with(holder.itemView.context)
+            Glide.with(holder.itemView.context)
                 .load(data.radioAddr)
                 .into(radioImageView)
         } else {
-            GlideApp.with(holder.itemView.context)
+            Glide.with(holder.itemView.context)
                 .load(R.drawable.ic_clear)
                 .into(radioImageView)
         }
         holder.itemView.setOnClickListener { v ->
             if (!isInternetAvailable(v.context)) {
-//                        Log.d("kkkkk in isInternetAvailable:", "${intent?.action},, ${music.id}, ${music.title}")
                 showError(v)
                 return@setOnClickListener
             }
@@ -90,6 +91,7 @@ class RadioAdapter: RecyclerView.Adapter<RadioAdapter.GridAdapter>(){
                     }
 
                     MusicConstants.STATE_SERVICE.PREPARE, MusicConstants.STATE_SERVICE.PLAY -> {
+                        time = System.currentTimeMillis()
                         if (MusicDevice.titleDetail != data.detail) {
                             PendinIntent.lPauseIntent.action = MusicConstants.ACTION.PLAY_ACTION
                             dataSource = data.title
@@ -108,6 +110,7 @@ class RadioAdapter: RecyclerView.Adapter<RadioAdapter.GridAdapter>(){
                                 e.printStackTrace()
                             }
                         } else {
+//                            Log.d("라디오"," 포즈 currentTimeMillis=> ${System.currentTimeMillis()}")
                             PendinIntent.lPauseIntent.action = MusicConstants.ACTION.PAUSE_ACTION
                             val lPendingPauseIntent = PendingIntent.getService(
                                 v.context, 0,
@@ -126,6 +129,7 @@ class RadioAdapter: RecyclerView.Adapter<RadioAdapter.GridAdapter>(){
                             showError(v)
                             return@setOnClickListener
                         }
+
                         if (MusicDevice.titleDetail != data.detail) { //  액션플에이
 //                    Log.d("radoiTest","정지상태, 방송 재목 다를때, ${MusicDevice.titleDetail}, ${data.detail}")
                             PendinIntent.lPlayIntent.action = MusicConstants.ACTION.PLAY_ACTION
@@ -146,19 +150,37 @@ class RadioAdapter: RecyclerView.Adapter<RadioAdapter.GridAdapter>(){
                             }
                         } else { // 자체 포즈
 //                    Log.d("radoiTest","정지상태, 라디오 일때")
-                            PendinIntent.lReplayIntent.action = MusicConstants.ACTION.REPLAY_ACTION
-                            val lPendingPlayIntent = PendingIntent.getService(
-                                v.context,
-                                0,
-                                PendinIntent.lReplayIntent,
-                                PendingIntent.FLAG_IMMUTABLE
-                            )
-                            try {
-                                lPendingPlayIntent.send()
-                            } catch (e: PendingIntent.CanceledException) {
-                                e.printStackTrace()
+                            val timeDiff = System.currentTimeMillis() - time
+                            if (timeDiff > 10000) {
+//                                Log.d("라디오","플레이인텐트, timeDiff = > $timeDiff" )
+                                PendinIntent.lPlayIntent.action = MusicConstants.ACTION.PLAY_ACTION
+                                val lPendingPlayIntent = PendingIntent.getService(
+                                    v.context,
+                                    0,
+                                    PendinIntent.lPlayIntent,
+                                    PendingIntent.FLAG_IMMUTABLE
+                                )
+                                try {
+                                    lPendingPlayIntent.send()
+                                } catch (e: PendingIntent.CanceledException) {
+                                    e.printStackTrace()
+                                }
+                            } else {
+//                                Log.d("라디오","리플레이인텐트, timeDiff = > $timeDiff\" ")
+                                PendinIntent.lReplayIntent.action =
+                                    MusicConstants.ACTION.REPLAY_ACTION
+                                val lPendingPlayIntent = PendingIntent.getService(
+                                    v.context,
+                                    0,
+                                    PendinIntent.lReplayIntent,
+                                    PendingIntent.FLAG_IMMUTABLE
+                                )
+                                try {
+                                    lPendingPlayIntent.send()
+                                } catch (e: PendingIntent.CanceledException) {
+                                    e.printStackTrace()
+                                }
                             }
-
                         }
                     }
                 } // when

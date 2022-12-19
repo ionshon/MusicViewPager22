@@ -89,6 +89,7 @@ class FragmentPlay : Fragment() {
                             binding.tvJudulLagu.text = song?.title // titleDetail
                             binding.textSinger.text = song?.artist ?: ""
                             binding.tvCurrentDuration.text = "${index+1}/${musicList.size}"
+                            binding.textViewGenreInplay.text ="${song?.album}"
                             textLyric.text = MusicDevice.lyric
                             textLyric.scrollY = 0
 
@@ -104,6 +105,7 @@ class FragmentPlay : Fragment() {
 //                        Log.d("playFrag", "라디오 isPlaying=> ${mPlayer?.isPlaying}")
                         binding.tvTotalDuration.text = songTimer.milliSecondsToTimer(totalLen.toLong())
                         binding.tvCurrentDuration.text = "0:00"
+                        binding.textViewGenreInplay.text = ""
                         CoroutineScope(Dispatchers.Main).launch {
                             binding.imagePlaying.visibility = VISIBLE
                             Glide.with(this@FragmentPlay).load(R.raw.colorloading96).into(playingImage)

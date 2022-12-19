@@ -6,26 +6,81 @@
     android:layout_height="match_parent"
     tools:context=".fragments.FragmentList">
 
-    <!-- TODO: Update blank fragment layout -->
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView_List"
+    <!-- TODO: Update blank fragment layout -->
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="50dp"
-        android:fadeScrollbars="false"
+        android:layout_marginTop="55dp">
+
+        <FrameLayout
+            android:id="@+id/bubble"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            android:paddingTop="10dp"
+            app:layout_constraintEnd_toStartOf="@+id/handle_view"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/bubble_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/bubble"
+                android:ellipsize="end"
+                android:lines="1"
+                android:paddingStart="10dp"
+                android:paddingTop="2dp"
+                android:paddingEnd="20dp"
+                android:paddingBottom="4dp"
+                android:textSize="20sp"
+                tools:text="123" />
+        </FrameLayout>
+
+        <ImageView
+            android:id="@+id/handle_view"
+            android:layout_width="20dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="0dp"
+            android:background="@color/black"
+            android:contentDescription="@string/quick_scroll_handle"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_unfold_more_black_48dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView_List"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:listitem="@layout/item_layout">
+        </androidx.recyclerview.widget.RecyclerView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!--
+        android:fadeScrollbars="true"
         android:scrollbarFadeDuration="5"
         android:scrollbarSize="20dp"
-        android:scrollbars="vertical"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/item_layout" />
-
+        android:scrollbars="vertical" -->
+<!--
+    app:fastScrollEnabled="true"
+    app:fastScrollHorizontalThumbDrawable="@drawable/bg_thumb"
+    app:fastScrollHorizontalTrackDrawable="@drawable/track"
+    app:fastScrollVerticalThumbDrawable="@drawable/bg_thumb"
+    app:fastScrollVerticalTrackDrawable="@drawable/track"-->
     <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="#DEE8EF"
         app:contentInsetStart="0dp"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -33,6 +88,20 @@
             android:layout_height="match_parent"
             android:paddingStart="8dp"
             android:paddingEnd="8dp">
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/searchView_music"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:maxWidth="300dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:queryBackground="@android:drawable/editbox_background"
+                app:queryHint="검색어를 입력하세요"
+                app:searchIcon="?android:attr/actionModeWebSearchDrawable">
+
+            </androidx.appcompat.widget.SearchView>
 
             <Button
                 android:id="@+id/button_allmusic"
@@ -43,19 +112,41 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.appcompat.widget.SearchView
-                android:id="@+id/searchView_music"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:maxWidth="600dp"
+            <ImageView
+                android:id="@+id/imageView_album"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="16dp"
+                android:autofillHints="album"
+                android:background="@drawable/ic_disk"
+                android:tooltipText="album"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:queryBackground="@android:drawable/editbox_background"
-                app:queryHint="검색어를 입력하세요"
-                app:searchIcon="?android:attr/actionModeWebSearchDrawable">
+                app:layout_constraintStart_toEndOf="@+id/imageView_genre"
+                app:layout_constraintTop_toTopOf="parent" />
 
-            </androidx.appcompat.widget.SearchView>
+            <ImageView
+                android:id="@+id/imageView_genre"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="16dp"
+                android:background="@android:drawable/ic_menu_sort_by_size"
+                android:tooltipText="genre"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/imageView_shuffle"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/imageView_shuffle"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="16dp"
+                android:autofillHints="album"
+                android:background="@drawable/ic_all_inclusive_black_24dp"
+                android:tooltipText="shuffle"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/searchView_music"
+                app:layout_constraintTop_toTopOf="parent" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.appcompat.widget.Toolbar>
 

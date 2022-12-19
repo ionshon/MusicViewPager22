@@ -44,8 +44,8 @@ class ForegroundService : Service(), MediaPlayer.OnErrorListener, MediaPlayer.On
     private val mLock = Any()
     private val mHandler = Handler(Looper.getMainLooper())//Handler()
 
-    var t = 0
-    val broadCastThread = Thread(Runnable {
+//    var t = 0
+    /*val broadCastThread = Thread(Runnable {
         while (isServiceRunning as Boolean) {
 //            for (i in 0..t) {
                 val intent = Intent()
@@ -57,7 +57,7 @@ class ForegroundService : Service(), MediaPlayer.OnErrorListener, MediaPlayer.On
                 t += 1
             }
 //        }
-    })
+    })*/
 
 //    private var mUriRadio: Uri? = null
     private var notification: Notification? = null
@@ -72,8 +72,8 @@ class ForegroundService : Service(), MediaPlayer.OnErrorListener, MediaPlayer.On
          }
      }*/
 
-    var isClickedStop = false
-    var isClickedPause = false
+    private var isClickedStop = false
+    private var isClickedPause = false
 
     override fun onCreate() {
         super.onCreate()
@@ -125,7 +125,7 @@ class ForegroundService : Service(), MediaPlayer.OnErrorListener, MediaPlayer.On
 
 //        val lPlayIntent = Intent(this, ForegroundService::class.java)
         lPlayIntent.action = MusicConstants.ACTION.PLAY_ACTION
-        val lPendingPlayIntent = PendingIntent.getService(this, 0, lPlayIntent, PendingIntent.FLAG_IMMUTABLE)
+//        val lPendingPlayIntent = PendingIntent.getService(this, 0, lPlayIntent, PendingIntent.FLAG_IMMUTABLE)
         lReplayIntent.action = MusicConstants.ACTION.REPLAY_ACTION
         val lPendingReplayIntent = PendingIntent.getService(this, 0, lReplayIntent, PendingIntent.FLAG_IMMUTABLE)
 
@@ -188,7 +188,7 @@ class ForegroundService : Service(), MediaPlayer.OnErrorListener, MediaPlayer.On
 
         Log.d("MusicViewPager22", "onStartCommand()")
         Log.d("MusicViewPager22", "isServiceRunning=> ${isServiceRunning}")
-        Log.d("MusicViewPager22", "broadCastThread=> ${broadCastThread.isAlive}")
+//        Log.d("MusicViewPager22", "broadCastThread=> ${broadCastThread.isAlive}")
 
         isServiceRunning = true
 //        broadCastThread.start()
@@ -254,8 +254,8 @@ class ForegroundService : Service(), MediaPlayer.OnErrorListener, MediaPlayer.On
 
     private fun finish() {
         MainActivity().moveTaskToBack(true)						// 태스크를 백그라운드로 이동
-        MainActivity().finishAndRemoveTask();					// 액티비티 종료 + 태스크 리스트에서 지우기
-        android.os.Process.killProcess(android.os.Process.myPid())	// 앱 프로세스 종료
+        MainActivity().finishAndRemoveTask()					// 액티비티 종료 + 태스크 리스트에서 지우기
+        Process.killProcess(Process.myPid())	// 앱 프로세스 종료
     }
     private fun destroyPlayer() {
         if (mPlayer != null) {
