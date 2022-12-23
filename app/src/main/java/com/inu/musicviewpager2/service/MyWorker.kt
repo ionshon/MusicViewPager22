@@ -16,14 +16,14 @@ class MyWorker(
 ) : Worker(context, params) {
     private val TAG = "MyWorker"
     override fun doWork(): Result {
-        Log.d(TAG, "doWork called for: " + this.id)
-        Log.d(TAG, "Service Running 1: " + isServiceRunning)
+//        Log.d(TAG, "doWork called for: " + this.id)
+//        Log.d(TAG, "Service Running 1: " + isServiceRunning)
         if (!isServiceRunning!!) {
             ContextCompat.startForegroundService(context, intent!!)
-            Log.d(TAG, "starting service from doWork")
+//            Log.d(TAG, "starting service from doWork")
             intent = Intent(this.context, ForegroundService::class.java)
             intent?.action = MusicConstants.ACTION.START_ACTION
-            Log.d(TAG, "Service Running 2: " + isServiceRunning)
+//            Log.d(TAG, "Service Running 2: " + isServiceRunning)
         }
         return Result.success()
     }

@@ -12,6 +12,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO"/>
 
     <uses-feature
         android:glEsVersion="0x00020000"
@@ -33,10 +34,10 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
 
-        <receiver
+       <!-- <receiver
             android:name=".service.MyReceiver"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="true" />-->
         <!--<receiver android:name=".fragments.FragmentPlay$MyBR"  android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
@@ -56,13 +57,13 @@
             </intent-filter>
         </service>-->
 
-        <activity
+       <!-- <activity
             android:name="dlna.AboutActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
-        </activity>
+        </activity>-->
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait"

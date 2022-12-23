@@ -15,12 +15,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.inu.musicviewpager2.R
+import com.inu.musicviewpager2.adapter.MusicAdapter.Companion.index
 import com.inu.musicviewpager2.constant.MusicConstants
 import com.inu.musicviewpager2.constant.PendinIntent
 import com.inu.musicviewpager2.constant.PendinIntent.intent
 import com.inu.musicviewpager2.model.MusicDevice
 import com.inu.musicviewpager2.model.MusicDevice.dataSource
 import com.inu.musicviewpager2.model.MusicDevice.imageRadioPlaySource
+import com.inu.musicviewpager2.model.MusicDevice.isRadioOn
+import com.inu.musicviewpager2.model.MusicDevice.musicList
 import com.inu.musicviewpager2.model.Radio
 import com.inu.musicviewpager2.service.ForegroundService
 import com.inu.musicviewpager2.util.NetworkHelper
@@ -65,14 +68,17 @@ class RadioAdapter: RecyclerView.Adapter<RadioAdapter.GridAdapter>(){
                 .into(radioImageView)
         }
         holder.itemView.setOnClickListener { v ->
+            isRadioOn = true
+            if (index != -1)
+                musicList[index].isSelected = false
             if (!isInternetAvailable(v.context)) {
                 showError(v)
                 return@setOnClickListener
             }
 
+//            Log.d("setOnClickListener","${MusicConstants.RADIO_ADDR.radioAddrList[position]}")
             if (data.title == "") {
                 SetStreamUrl().setStreamUrl(MusicConstants.RADIO_ADDR.radioAddrList[position])
-                Log.d("setOnClickListener","${MusicConstants.RADIO_ADDR.radioAddrList[position]}")
             } else {
 
                 when (ForegroundService.state) {

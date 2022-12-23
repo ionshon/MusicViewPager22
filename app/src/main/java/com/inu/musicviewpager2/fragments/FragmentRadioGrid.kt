@@ -75,8 +75,8 @@ class FragmentRadioGrid : Fragment() {
                 }
                 Log.d("swipeRefreshLayout", "$data")
             }*/
-            val i = MusicDevice.radioAddr.values.indexOf("")
-            Log.d("swipeRefreshLayout","isRefreshing = false, ${i}")
+//            val i = MusicDevice.radioAddr.values.indexOf("")
+//            Log.d("swipeRefreshLayout","isRefreshing = false, ${i}")
 //            SetStreamUrl().setStreamUrl(mPl)
             dataList = setData()
             adapter = RadioAdapter()
@@ -109,7 +109,7 @@ class FragmentRadioGrid : Fragment() {
         for (num in 1..radioImages.size) {
             val addr : String = MusicDevice.radioAddr.values.toList()[num-1]
             val detail : String = MusicDevice.radioAddr.keys.toList()[num-1]
-            Log.d("MusicConstants in setdata", "${addr}")
+//            Log.d("MusicConstants in setdata", "${addr}")
             val listData = Radio(radioImages[num-1], addr, detail)
             data.add(listData)
         }

@@ -1,6 +1,5 @@
 package com.inu.musicviewpager2.util
 
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.AlphaAnimation
@@ -22,7 +21,6 @@ import kotlin.random.Random
 class FastScroller(
     private val handleView: View,
     private val bubbleListener: BubbleListener,
-    private val recyclerViewList: RecyclerView,
     private val fadeOutDuration: Long = 300.toLong(),
     private val hideDelayMillis: Long = 1000.toLong(),
 ) {
@@ -39,9 +37,7 @@ class FastScroller(
             throw IllegalArgumentException("recyclerView's layoutManager is not LinearLayoutManager")
         listView = recyclerView
         layoutManager = recyclerView.layoutManager as LinearLayoutManager
-        Log.d("bubleAdapter","1")
         if (recyclerView.adapter is BubbleAdapter) {
-            Log.d("bubleAdapter","2")
             bubbleListener.setVisible(false)
             listViewAdapter = recyclerView.adapter as BubbleAdapter
         }
@@ -50,26 +46,22 @@ class FastScroller(
     }
 
     private fun initHandlerPositionChangedListener() {
-        Log.d("bubleAdapter","3")
         handleView.setOnTouchListener(object : View.OnTouchListener {
             private var mDownX: Float = 0.toFloat()
             private var mDownY: Float = 0.toFloat()
             private var mDownXInHandleView: Float = 0.toFloat()
             private var mDownYInHandleView: Float = 0.toFloat()
             override fun onTouch(handleView: View, event: MotionEvent): Boolean {
-                Log.d("bubleAdapter","4")
                 if (handleView.alpha == 0f)
                     return true
                 when (event.action) {
                     MotionEvent.ACTION_DOWN -> {
-//                        recyclerViewList.requestDisallowInterceptTouchEvent(true)
                         isMovedByHandleDrag = true
                         mDownY = event.rawY
                         mDownYInHandleView = event.y
                         return true
                     }
                     MotionEvent.ACTION_MOVE -> {
-//                        recyclerViewList.requestDisallowInterceptTouchEvent(true)
                         if (isMovedByHandleDrag.not()) return false
                         val itemCount = listView.adapter?.itemCount ?: 0
                         val percent = calculateHandlePercentBy(handleView, event)
@@ -80,14 +72,13 @@ class FastScroller(
                         return true
                     }
                     MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-//                        recyclerViewList.requestDisallowInterceptTouchEvent(true)
                         isMovedByHandleDrag = false
                         mDownX = 0f
                         mDownY = 0f
                         mDownXInHandleView = 0f
                         mDownYInHandleView = 0f
                         handleView.performClick()
-                        bubbleListener?.setVisible(false)
+                        bubbleListener.setVisible(false)
                         return true
                     }
                     else -> return false
@@ -95,9 +86,9 @@ class FastScroller(
             }
 
             private fun updateBubble(adapterPosition: Int) {
-                if (bubbleListener != null && listViewAdapter != null) {
+                if (listViewAdapter != null) {
                     bubbleListener.setVisible(true)
-                    bubbleListener.setBubble(listViewAdapter!!.getBubbleItem(adapterPosition))
+                    bubbleListener.setBubble((adapterPosition+1).toString()) //listViewAdapter!!.getBubbleItem(adapterPosition))
                 }
             }
 

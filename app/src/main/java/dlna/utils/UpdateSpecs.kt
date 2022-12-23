@@ -55,7 +55,7 @@ object  UpdateSpecs {
 //                .addHeader("Connection", "close")
                 .build()
             val response = mClient.newCall(request).execute()
-            Log.d("updateSpeck", "response.isSuccessful: $response")
+//            Log.d("updateSpeck", "response.isSuccessful: $response")
             if (!response.isSuccessful) {
                 throw IOException("Unexpected_code $response")
             }

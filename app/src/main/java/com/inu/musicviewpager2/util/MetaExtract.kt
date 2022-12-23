@@ -1,12 +1,25 @@
-package com.inu.musicviewpager2.util;
+package com.inu.musicviewpager2.util
 
-import java.util.Date;
+import com.inu.musicviewpager2.model.MusicDevice.song
+import com.mpatric.mp3agic.Mp3File
 
-import coil.decode.ImageSource;
+class MetaExtract {
 
-public class MetaExtract {
+   fun getLyric(): String {
+       val lyric: String? = try {
+           val mp3file= Mp3File(song?.path)
+           val id3v2Tag = mp3file.id3v2Tag
+           id3v2Tag.lyrics
+       } catch( e: java.lang.Exception){
+           "\n\n     error!!     "
+       } finally{
+//           println("id3v2Tag.lyrics error!!")
+       }
 
- /*   // MP3 파일 가사 태그 읽기
+        return lyric?: "\n\n    No lyric!    "
+   }
+
+    /*   // MP3 파일 가사 태그 읽기
 try (
     Metadata metadata = new Metadata("path/audio-Lyrics.mp3")) {
         MP3RootPackage root = metadata.getRootPackageGeneric();

@@ -8,6 +8,7 @@ import android.provider.MediaStore
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.loader.content.CursorLoader
+import com.inu.musicviewpager2.database.dao.MusicDao
 import com.inu.musicviewpager2.model.Music
 import com.inu.musicviewpager2.util.MyApplication
 
@@ -18,7 +19,7 @@ object MusicProvider {
     // 1. 데이터 테이블 주소
     private val musicUri: Uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
     var musicList = mutableListOf<Music>()
-    var genreList = mutableListOf<String>()
+//    var genreList = mutableListOf<String>()
     // 2. 가져올 데이터 컬컴 정의
     private val proj = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
         arrayOf(
@@ -28,7 +29,8 @@ object MusicProvider {
             MediaStore.Audio.AudioColumns.ALBUM_ID, // 3
             MediaStore.Audio.AudioColumns.DURATION, // 4
             MediaStore.Audio.AudioColumns.DATA, // 5
-            MediaStore.Audio.AudioColumns.GENRE //6
+            MediaStore.Audio.AudioColumns.GENRE,//6
+            MediaStore.Audio.AudioColumns._ID
         )
     } else {
         arrayOf(
@@ -38,7 +40,8 @@ object MusicProvider {
             MediaStore.Audio.AudioColumns.ALBUM_ID, // 3
             MediaStore.Audio.AudioColumns.DURATION, // 4
             MediaStore.Audio.AudioColumns.DATA, // 5
-            MediaStore.Audio.AudioColumns.ALBUM //6 정은폰에러?
+            MediaStore.Audio.AudioColumns.ALBUM,//6
+            MediaStore.Audio.AudioColumns._ID
         )
     }
 
@@ -54,16 +57,17 @@ object MusicProvider {
             val title = cursor.getString(1)
             val duration = cursor.getLong(4)
             if (duration > 10000 && !title.contains("통화 녹음")) {  // 약 2분 이하 곡 제외
-                val id = cursor.getString(0)
+                val album = cursor.getString(0)
                 val artist = cursor.getString(2)
                 val albumId = cursor.getLong(3) //Long = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID)) //cursor!!.getString(3)
                 val albumUri = Uri.parse("content://media/external/audio/albumart/$albumId")
                 val path = cursor.getString(5)
                 val genre = cursor.getString(6)
+                val id = cursor.getInt(7)
                 //   i += 1
 //                Log.d("genreData","$path")
 
-                val music = Music(id, title, artist, albumId, duration, albumUri, path, genre) //, albumArtBit)
+                val music = Music(id, album, title, artist, albumId, duration, albumUri, path, genre, false,false) //, albumArtBit)
                 musicList.add(music)
             }
         }

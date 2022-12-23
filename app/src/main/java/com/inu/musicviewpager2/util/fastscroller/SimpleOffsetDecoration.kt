@@ -1,4 +1,4 @@
-package com.inu.musicviewpager2.util
+package com.inu.musicviewpager2.util.fastscroller
 
 import android.graphics.Rect
 import android.view.View

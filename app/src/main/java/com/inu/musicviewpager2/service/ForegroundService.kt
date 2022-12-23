@@ -18,6 +18,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.inu.musicviewpager2.MainActivity
 import com.inu.musicviewpager2.R
+import com.inu.musicviewpager2.adapter.MusicAdapter.Companion.index
 import com.inu.musicviewpager2.constant.MusicConstants
 import com.inu.musicviewpager2.constant.PendinIntent.lPauseIntent
 import com.inu.musicviewpager2.constant.PendinIntent.intent
@@ -25,14 +26,15 @@ import com.inu.musicviewpager2.constant.PendinIntent.lPlayIntent
 import com.inu.musicviewpager2.constant.PendinIntent.lReplayIntent
 import com.inu.musicviewpager2.fragments.FragmentPlay.Companion.realTotalLen
 import com.inu.musicviewpager2.fragments.FragmentPlay.Companion.totalLen
+import com.inu.musicviewpager2.model.MusicDevice
 import com.inu.musicviewpager2.model.MusicDevice.dataSource
-import com.inu.musicviewpager2.model.MusicDevice.index
 import com.inu.musicviewpager2.model.MusicDevice.lyric
 import com.inu.musicviewpager2.model.MusicDevice.mPlayer
 import com.inu.musicviewpager2.model.MusicDevice.musicList
 import com.inu.musicviewpager2.model.MusicDevice.song
 import com.inu.musicviewpager2.model.MusicDevice.titleDetail
 import com.inu.musicviewpager2.model.MusicDevice.titleMain
+import com.inu.musicviewpager2.util.MetaExtract
 import com.mpatric.mp3agic.Mp3File
 
 
@@ -468,13 +470,9 @@ class ForegroundService : Service(), MediaPlayer.OnErrorListener, MediaPlayer.On
         titleMain = "Music"
         titleDetail = musicList[index].title
         song = musicList[index]
-        try {
-            val mp3file= Mp3File(song?.path)
-            val id3v2Tag = mp3file.id3v2Tag
-            lyric = id3v2Tag.lyrics
-        } catch (e: Exception) {
-            lyric = "getlyric error"
-        }
+        musicList[index].isSelected = true
+        musicList[index-1].isSelected = false
+        MusicDevice.lyric = MetaExtract().getLyric()
 
         lPlayIntent.action = MusicConstants.ACTION.PLAY_ACTION
         val lPendingPlayIntent =
